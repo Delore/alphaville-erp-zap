@@ -12,6 +12,10 @@
   },
   "author": "Alphaville Systems",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Delore/alphaville-erp-zap.git"
+  },
   "build": {
     "appId": "com.alphavillesystems.alphaville-erp-zap",
     "productName": "Alphaville Systems ERP zap",
