@@ -22,5 +22,9 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
 
     receiveVersion: function (func) {
         ipcRenderer.on("receiveVersion", (event, ...args) => func(event, ...args));
-    }
+    },
+
+    callRestartApp: function () {
+        ipcRenderer.send("callRestartApp");
+    },
 });
