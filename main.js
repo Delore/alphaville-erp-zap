@@ -90,18 +90,15 @@ ipcMain.on("sendMsg", async (event, data) => {
 
 
 ipcMain.on("getVersion", async (event) => {
-    mainWindow.webContents.send('receiveVersion', { version: app.getVersion() });
-    //event.sender.send('receiveVersion', { version: app.getVersion() });
+    event.sender.send('receiveVersion', { version: app.getVersion() });
 })
 
 autoUpdater.on('update-available', (info) => {
     console.log("update-available: " + info)
-    mainWindow.webContents.send('receiveVersion', { version: app.getVersion() });
 });
 
 autoUpdater.on('update-downloaded', (info) => {
     console.log("update-downloaded: " + info)
-    mainWindow.webContents.send('update_downloaded')
 });
 
 ipcMain.on('getRestartApp', () => {
