@@ -1,6 +1,6 @@
 {
   "name": "alphaville-erp-zap",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Alphaville Systems Delore ERP Zap",
   "main": "main.js",
   "scripts": {
