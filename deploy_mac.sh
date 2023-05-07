@@ -15,8 +15,6 @@ npm run dist
 
 PACKAGE_VERSION=$(grep '"version":' package.json | cut -d\" -f4)
 
-git tag -a '$PACKAGE_VERSION'
-
 scp './build/alphaville-erp-zap_'$PACKAGE_VERSION'.dmg' root@191.252.219.73:/root/delore-erp-srv/www/site/downloads
 
 echo "Finish"
