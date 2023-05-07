@@ -1,12 +1,25 @@
 const { ipcRenderer, contextBridge } = require("electron");
 contextBridge.exposeInMainWorld("ipcRenderer", {
     ipcRenderer,
-    send: function () {
+    getQRCode: function () {
         ipcRenderer.send("getQRCode");
+    },
+    sendMsg: function (data) {
+        ipcRenderer.send("sendMsg", data);
     },
     refreshQRCode: function () {
         ipcRenderer.send("refreshQRCode");
     },
+
+    getVersion: function () {
+        ipcRenderer.send("getVersion");
+    },
+
+    callRestartApp: function () {
+        ipcRenderer.send("callRestartApp");
+    },
+
+    // Receive
 
     receive: function (func) {
         ipcRenderer.on("checkConection", (event, ...args) => func(event, ...args));
@@ -16,15 +29,7 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
         ipcRenderer.on("receiveSendMsg", (event, ...args) => func(event, ...args));
     },
 
-    getVersion: function () {
-        ipcRenderer.send("getVersion");
-    },
-
     receiveVersion: function (func) {
         ipcRenderer.on("receiveVersion", (event, ...args) => func(event, ...args));
-    },
-
-    callRestartApp: function () {
-        ipcRenderer.send("callRestartApp");
-    },
+    }
 });
