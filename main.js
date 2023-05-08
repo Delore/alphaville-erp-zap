@@ -26,9 +26,7 @@ const createWindow = () => {
         mainWindow.loadURL('https://prime.alphavillesystems.com.br')
     }
 
-    mainWindow.once('ready-to-show', () => {
-
-
+    setTimeout(() => {
         dialog.showMessageBox({
             type: 'warning',
             title: 'Atualização',
@@ -37,9 +35,8 @@ const createWindow = () => {
             message: "Versão",
             buttons: ['Atualizar']
         })
-
         autoUpdater.checkForUpdatesAndNotify();
-    })
+    }, 500);
 }
 
 app.whenReady().then(() => {
