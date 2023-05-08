@@ -108,7 +108,7 @@ autoUpdater.on('update-available', () => {
         title: 'Atualização',
         defaultId: 0,
         cancelId: 0,
-        message: "Nova atualização, aguarde o download para atualizar...",
+        message: "Nova atualização, fazendo download para atualizar...",
         buttons: ['OK']
     }, (index) => { })
 });
