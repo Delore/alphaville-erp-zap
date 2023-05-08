@@ -14,13 +14,9 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     getVersion: function () {
         ipcRenderer.send("getVersion");
     },
-
-    callRestartApp: function () {
-        ipcRenderer.send("callRestartApp");
-    },
-
+    //
     // Receive
-
+    //
     receive: function (func) {
         ipcRenderer.on("checkConection", (event, ...args) => func(event, ...args));
     },
