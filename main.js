@@ -92,7 +92,15 @@ ipcMain.on("getVersion", async (event) => {
 })
 
 autoUpdater.on('update-available', (info) => {
-    console.log("update-available: " + info)
+    dialog.showMessageBox({
+        type: 'warning',
+        title: 'Atualização',
+        defaultId: 0,
+        cancelId: 0,
+        message: "Versão" + info.version,
+        buttons: ['Atualizar']
+    })
+    console.log("update-available: " + info.version)
 });
 
 autoUpdater.on('update-downloaded', (info) => {
