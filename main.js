@@ -21,12 +21,15 @@ const createWindow = () => {
     });
 
     if (isDev()) {
-        mainWindow.loadURL('http://192.168.15.8:4200')
+        mainWindow.loadURL('http://192.168.1.105:4200')
         mainWindow.webContents.openDevTools()
     } else {
         mainWindow.loadURL('https://prime.alphavillesystems.com.br')
     }
-    autoUpdater.checkForUpdatesAndNotify();
+
+    mainWindow.once('ready-to-show', () => {
+        autoUpdater.checkForUpdatesAndNotify();
+    });
 }
 
 app.whenReady().then(() => {
@@ -59,11 +62,11 @@ ipcMain.on("getQRCode", async (event) => {
 })
 
 ipcMain.on("sendMsg", async (event, data) => {
-    try {
-        var tel = data.tel
-        var msg = data.msg
-        if (clientVen && await clientVen.isConnected()) {
-            if (tel.toString().length == 11) {
+    var tel = data.tel
+    var msg = data.msg
+    if (clientVen && await clientVen.isConnected()) {
+        if (tel.toString().length == 11) {
+            try {
                 clientVen.sendText("55" + tel + '@c.us', msg)
                     .then((result) => {
                         console.log("Enviou: " + tel + " - " + msg);
@@ -72,19 +75,19 @@ ipcMain.on("sendMsg", async (event, data) => {
                         console.log("Não Enviou Error Catch: " + tel + " - " + msg);
                         event.sender.send("receiveSendMsg", { sent: false, data: data });
                     });
-
-            } else {
-                console.log("Não Enviou Tel Invalid: " + tel);
+            } catch (error) {
+                console.log("Não Enviou Error Try: " + tel + " - " + error);
                 event.sender.send("receiveSendMsg", { sent: false, data: data });
             }
         } else {
-            event.sender.send("receiveSendMsg", { sent: false, data: null });
+            console.log("Não Enviou Tel Invalid: " + tel);
+            event.sender.send("receiveSendMsg", { sent: false, data: data });
         }
-    } catch (error) {
-        console.log("Não Enviou Error Try: " + tel + " - " + error);
+    } else {
         event.sender.send("receiveSendMsg", { sent: false, data: null });
     }
 })
+
 
 ipcMain.on("getVersion", async (event) => {
     event.sender.send('receiveVersion', { version: app.getVersion() });
@@ -96,6 +99,7 @@ autoUpdater.on('update-available', (info) => {
 
 autoUpdater.on('update-downloaded', (info) => {
     console.log("update-downloaded: " + info)
+    autoUpdater.quitAndInstall();
 });
 
 ipcMain.on('getRestartApp', () => {
@@ -110,29 +114,34 @@ function callConnect(event) {
         headless: true,
         folderNameToken: 'tokens',
         mkdirFolderToken: userDataDir
-    }, (base64Qrimg, asciiQR, attempts, urlCode) => {
-        console.log('Number of attempts to read the qrcode: ', attempts);
-        console.log('Terminal qrcode: ', asciiQR);
-        console.log('base64 image string qrcode: ', base64Qrimg);
-        console.log('urlCode (data-ref): ', urlCode);
-        event.sender.send("checkConection", { status: 1, qrcode: urlCode, msg: "Leia o QRCode para conectar e aguarde a conexão. Tentativa: " + attempts });
-    }, (statusSession, session) => {
-        console.log('Status Session: ', statusSession); //return isLogged || notLogged || browserClose || qrReadSuccess || qrReadFail || autocloseCalled || desconnectedMobile || deleteToken || chatsAvailable || deviceNotConnected || serverWssNotConnected || noOpenBrowser || initBrowser || openBrowser || connectBrowserWs || initWhatsapp || erroPageWhatsapp || successPageWhatsapp || waitForLogin || waitChat || successChat
-        console.log('Session name: ', session);
-        if (statusSession == "successChat") {
-            event.sender.send("checkConection", { status: 2, qrcode: null, msg: "Conectado!" });
-        } else {
-            event.sender.send("checkConection", { status: 0, qrcode: null, msg: "Aguarde, conectando... Session: " + statusSession });
-        }
     },
+
+        (base64Qrimg, asciiQR, attempts, urlCode) => {
+            console.log('Number of attempts to read the qrcode: ', attempts);
+            console.log('Terminal qrcode: ', asciiQR);
+            console.log('base64 image string qrcode: ', base64Qrimg);
+            console.log('urlCode (data-ref): ', urlCode);
+            event.sender.send("checkConection", { status: 1, qrcode: urlCode, msg: "Leia o QRCode para conectar e aguarde a conexão. Tentativa: " + attempts });
+        },
+
+        (statusSession, session) => {
+            console.log('Status Session: ', statusSession); //return isLogged || notLogged || browserClose || qrReadSuccess || qrReadFail || autocloseCalled || desconnectedMobile || deleteToken || chatsAvailable || deviceNotConnected || serverWssNotConnected || noOpenBrowser || initBrowser || openBrowser || connectBrowserWs || initWhatsapp || erroPageWhatsapp || successPageWhatsapp || waitForLogin || waitChat || successChat
+            console.log('Session name: ', session);
+            if (statusSession == "successChat") {
+                event.sender.send("checkConection", { status: 2, qrcode: null, msg: "Conectado!" });
+            } else {
+                event.sender.send("checkConection", { status: 0, qrcode: null, msg: "Aguarde, conectando... Session: " + statusSession });
+            }
+        },
 
     ).then((client) => {
         clientVen = client
         clientVen.getSessionTokenBrowser().then((token) => {
             console.log(token)
         })
+
     }).catch((error) => {
-        console.error(error);
+        console.log(error);
         event.sender.send("checkConection", { status: 0, qrcode: null, msg: "Não foi possível conectar. Clique em atualizar o QRCode." + error });
     });
 }
