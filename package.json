@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node-gyp rebuild",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder build --win --publish never",
+    "deploy": "electron-builder build --win --publish always"
   },
   "author": "Alphaville Systems",
   "license": "ISC",
@@ -18,7 +19,7 @@
   },
   "build": {
     "appId": "com.alphavillesystems.alphaville-erp-zap",
-    "productName": "Alphaville Systems ERP zap",
+    "productName": "Alphaville Systems ERP Zap",
     "copyright": "Copyright © 2022 Alphaville Systems",
     "artifactName": "alphaville-erp-zap_${version}.${ext}",
     "directories": {
