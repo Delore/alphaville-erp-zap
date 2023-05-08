@@ -99,15 +99,15 @@ autoUpdater.on('update-downloaded', (info) => {
     console.log("update-downloaded: " + info)
     dialog.showMessageBox({
         type: 'warning',
-        title: 'Atualizar',
+        title: 'Atualização',
         defaultId: 0,
         cancelId: 0,
-        message: "Existe uma atualização disponível",
+        message: "Existe uma atualização disponível, clique em Atualizar",
         buttons: ['Atualizar']
     }, (index) => {
         if (index === 0) {
             setImmediate(() => {
-                autoUpdater.quitAndInstall();
+                autoUpdater.quitAndInstall()
                 app.quit()
             })
         }
