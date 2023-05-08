@@ -27,6 +27,17 @@ const createWindow = () => {
     }
 
     mainWindow.once('ready-to-show', () => {
+
+
+        dialog.showMessageBox({
+            type: 'warning',
+            title: 'Atualização',
+            defaultId: 0,
+            cancelId: 0,
+            message: "Versão",
+            buttons: ['Atualizar']
+        })
+
         autoUpdater.checkForUpdatesAndNotify();
     })
 }
@@ -91,20 +102,18 @@ ipcMain.on("getVersion", async (event) => {
     event.sender.send('receiveVersion', { version: app.getVersion() });
 })
 
-autoUpdater.on('update-available', (info) => {
+autoUpdater.on('update-available', () => {
     dialog.showMessageBox({
         type: 'warning',
         title: 'Atualização',
         defaultId: 0,
         cancelId: 0,
-        message: "Versão" + info.version,
-        buttons: ['Atualizar']
-    })
-    console.log("update-available: " + info.version)
+        message: "Nova atualização, aguarde o download para atualizar...",
+        buttons: ['OK']
+    }, (index) => { })
 });
 
-autoUpdater.on('update-downloaded', (info) => {
-    console.log("update-downloaded: " + info)
+autoUpdater.on('update-downloaded', () => {
     dialog.showMessageBox({
         type: 'warning',
         title: 'Atualização',
