@@ -27,14 +27,6 @@ const createWindow = () => {
     }
 
     setTimeout(() => {
-        dialog.showMessageBox({
-            type: 'warning',
-            title: 'Atualização',
-            defaultId: 0,
-            cancelId: 0,
-            message: "Versão",
-            buttons: ['Atualizar']
-        })
         autoUpdater.checkForUpdatesAndNotify();
     }, 500);
 }
