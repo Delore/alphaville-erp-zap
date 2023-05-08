@@ -1,10 +1,9 @@
-const { app, ipcMain, BrowserWindow } = require('electron')
+const { app, ipcMain, dialog, BrowserWindow } = require('electron')
 const { autoUpdater } = require('electron-updater');
 const fs = require('fs')
 const path = require('path')
 const venom = require('venom-bot');
 
-let ven = null;
 let clientVen = null;
 let mainWindow = null
 
@@ -29,7 +28,7 @@ const createWindow = () => {
 
     mainWindow.once('ready-to-show', () => {
         autoUpdater.checkForUpdatesAndNotify();
-    });
+    })
 }
 
 app.whenReady().then(() => {
@@ -88,7 +87,6 @@ ipcMain.on("sendMsg", async (event, data) => {
     }
 })
 
-
 ipcMain.on("getVersion", async (event) => {
     event.sender.send('receiveVersion', { version: app.getVersion() });
 })
@@ -99,23 +97,32 @@ autoUpdater.on('update-available', (info) => {
 
 autoUpdater.on('update-downloaded', (info) => {
     console.log("update-downloaded: " + info)
-    autoUpdater.quitAndInstall();
-});
-
-ipcMain.on('getRestartApp', () => {
-    autoUpdater.quitAndInstall();
+    dialog.showMessageBox({
+        type: 'warning',
+        title: 'Atualizar',
+        defaultId: 0,
+        cancelId: 0,
+        message: "Existe uma atualização disponível",
+        buttons: ['Atualizar']
+    }, (index) => {
+        if (index === 0) {
+            setImmediate(() => {
+                autoUpdater.quitAndInstall();
+                app.quit()
+            })
+        }
+    })
 });
 
 function callConnect(event) {
     const userDataDir = app.getPath('appData')
-    ven = venom.create({
+    venom.create({
         session: "company",
         multidevice: true,
         headless: true,
         folderNameToken: 'tokens',
         mkdirFolderToken: userDataDir
     },
-
         (base64Qrimg, asciiQR, attempts, urlCode) => {
             console.log('Number of attempts to read the qrcode: ', attempts);
             console.log('Terminal qrcode: ', asciiQR);
@@ -136,10 +143,6 @@ function callConnect(event) {
 
     ).then((client) => {
         clientVen = client
-        clientVen.getSessionTokenBrowser().then((token) => {
-            console.log(token)
-        })
-
     }).catch((error) => {
         console.log(error);
         event.sender.send("checkConection", { status: 0, qrcode: null, msg: "Não foi possível conectar. Clique em atualizar o QRCode." + error });
