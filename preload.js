@@ -4,8 +4,8 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     getQRCode: function () {
         ipcRenderer.send("getQRCode");
     },
-    sendMsg: function (data) {
-        ipcRenderer.send("sendMsg", data);
+    sendMsg: function (data, base64) {
+        ipcRenderer.send("sendMsg", data, base64);
     },
     refreshQRCode: function () {
         ipcRenderer.send("refreshQRCode");
