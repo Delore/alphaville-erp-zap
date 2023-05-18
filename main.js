@@ -1,6 +1,7 @@
 const { app, ipcMain, dialog, BrowserWindow } = require('electron')
 const { autoUpdater } = require('electron-updater');
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 const venom = require('venom-bot');
 
@@ -20,7 +21,7 @@ const createWindow = () => {
     });
 
     if (isDev()) {
-        mainWindow.loadURL('http://192.168.1.105:4200')
+        mainWindow.loadURL('http://192.168.15.8:4200')
         mainWindow.webContents.openDevTools()
     } else {
         mainWindow.loadURL('https://prime.alphavillesystems.com.br')
@@ -97,20 +98,50 @@ ipcMain.on("getQRCode", async (event) => {
     }
 })
 
-ipcMain.on("sendMsg", async (event, data) => {
+ipcMain.on("sendMsg", async (event, data, base64) => {
+    var filePath = os.tmpdir() + "/alpavilleerpzap.png"
+    if (base64 && base64 !== "") {
+        var binaryData = Buffer.from(base64, 'base64').toString('binary');
+        fs.writeFileSync(filePath, binaryData, "binary");
+    } else {
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath)
+        }
+    }
+
     var tel = data.tel
     var msg = data.msg
     if (clientVen && await clientVen.isConnected()) {
         if (tel.toString().length == 11) {
             try {
-                clientVen.sendText("55" + tel + '@c.us', msg)
-                    .then((result) => {
-                        console.log("Enviou: " + tel + " - " + msg);
-                        event.sender.send("receiveSendMsg", { sent: true, data: data });
-                    }).catch(err => {
-                        console.log("Não Enviou Error Catch: " + tel + " - " + msg);
-                        event.sender.send("receiveSendMsg", { sent: false, data: data });
-                    });
+                if (base64 && base64 !== "") {
+                    clientVen.sendText("55" + tel + '@c.us', msg)
+                        .then((result) => {
+
+                            clientVen.sendImage("55" + tel + '@c.us', filePath, "Imagem").then((result) => {
+                                console.log("Enviou: " + tel + " - " + msg);
+                                event.sender.send("receiveSendMsg", { sent: true, data: data });
+                            }).catch(err => {
+                                console.log("Não Enviou Error Catch: " + tel + " - " + msg);
+                                event.sender.send("receiveSendMsg", { sent: false, data: data });
+                            });
+
+                        }).catch(err => {
+                            console.log("Não Enviou Error Catch: " + tel + " - " + msg);
+                            event.sender.send("receiveSendMsg", { sent: false, data: data });
+                        });
+
+                } else {
+                    clientVen.sendText("55" + tel + '@c.us', msg)
+                        .then((result) => {
+                            console.log("Enviou: " + tel + " - " + msg);
+                            event.sender.send("receiveSendMsg", { sent: true, data: data });
+                        }).catch(err => {
+                            console.log("Não Enviou Error Catch: " + tel + " - " + msg);
+                            event.sender.send("receiveSendMsg", { sent: false, data: data });
+                        });
+                }
+
             } catch (error) {
                 console.log("Não Enviou Error Try: " + tel + " - " + error);
                 event.sender.send("receiveSendMsg", { sent: false, data: data });
