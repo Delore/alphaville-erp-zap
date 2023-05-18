@@ -7,7 +7,6 @@ npm version patch
 git add . 
 git commit -m "Bumb version"
 git push origin main
-
 rm -R ./build
 npm run deploy
 echo "Finish"
