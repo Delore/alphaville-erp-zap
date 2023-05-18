@@ -6,8 +6,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-./electron-builder.yml
-
 print.txt
 
 # Runtime data
@@ -114,3 +112,5 @@ captures/
 db_1.db
 
 package-lock.json
+electron-builder.yml
+electron-builder.*
