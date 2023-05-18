@@ -53,10 +53,8 @@ autoUpdater.on('update-downloaded', () => {
         buttons: ['Atualizar']
     }, (index) => {
         if (index === 0) {
-            setImmediate(() => {
-                autoUpdater.quitAndInstall()
-                app.quit()
-            })
+            autoUpdater.quitAndInstall()
+            app.quit()
         }
     })
 });
