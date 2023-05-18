@@ -28,14 +28,6 @@ const createWindow = () => {
     }
 
     setTimeout(() => {
-        dialog.showMessageBox({
-            type: 'warning',
-            title: 'Atualização',
-            defaultId: 0,
-            cancelId: 0,
-            message: "Nova atualização, fazendo download para atualizar...",
-            buttons: ['OK']
-        })
         autoUpdater.checkForUpdatesAndNotify();
     }, 500);
 }
