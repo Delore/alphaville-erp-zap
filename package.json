@@ -18,6 +18,11 @@
     "url": "https://github.com/Delore/alphaville-erp-zap.git"
   },
   "build": {
+    "publish": [
+      {
+        "provider": "github"
+      }
+    ],
     "appId": "com.alphavillesystems.alphaville-erp-zap",
     "productName": "Alphaville Systems ERP Zap",
     "copyright": "Copyright © 2022 Alphaville Systems",
