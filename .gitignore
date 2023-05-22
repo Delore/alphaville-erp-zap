@@ -1,4 +1,3 @@
-
 ############################################################################################
 
 electron-builder.yml
@@ -116,3 +115,5 @@ captures/
 db_1.db
 
 package-lock.json
+electron-builder.yml
+electron-builder.*

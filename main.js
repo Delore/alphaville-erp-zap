@@ -32,6 +32,33 @@ const createWindow = () => {
     }, 500);
 }
 
+autoUpdater.on('update-available', () => {
+    dialog.showMessageBox({
+        type: 'warning',
+        title: 'Atualização',
+        defaultId: 0,
+        cancelId: 0,
+        message: "Nova atualização, fazendo download para atualizar...",
+        buttons: ['OK']
+    })
+});
+
+autoUpdater.on('update-downloaded', () => {
+    dialog.showMessageBox({
+        type: 'warning',
+        title: 'Atualização',
+        defaultId: 0,
+        cancelId: 0,
+        message: "Existe uma atualização disponível, clique em Atualizar",
+        buttons: ['Atualizar']
+    }, (index) => {
+        if (index === 0) {
+            autoUpdater.quitAndInstall()
+            app.quit()
+        }
+    })
+});
+
 app.whenReady().then(() => {
     createWindow()
     app.on('activate', () => {
