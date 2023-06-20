@@ -22,6 +22,7 @@ const createWindow = () => {
 
     if (isDev()) {
         mainWindow.loadURL('http://192.168.15.8:4200')
+
         mainWindow.webContents.openDevTools()
     } else {
         mainWindow.loadURL('https://prime.alphavillesystems.com.br')
@@ -29,7 +30,7 @@ const createWindow = () => {
 
     setTimeout(() => {
         autoUpdater.checkForUpdatesAndNotify();
-    }, 500);
+    }, 200);
 }
 
 autoUpdater.on('update-available', () => {
