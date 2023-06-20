@@ -52,13 +52,11 @@ autoUpdater.on('update-downloaded', () => {
         cancelId: 0,
         message: "Existe uma atualização disponível, clique em Atualizar",
         buttons: ['Atualizar']
-    }, (index) => {
-        if (index === 0) {
-            setTimeout(() => {
-                autoUpdater.quitAndInstall()
-                app.quit()
-            }, 100);
-        }
+    }, () => {
+        setTimeout(() => {
+            autoUpdater.quitAndInstall()
+            app.quit()
+        }, 100);
     })
 });
 
