@@ -54,8 +54,10 @@ autoUpdater.on('update-downloaded', () => {
         buttons: ['Atualizar']
     }, (index) => {
         if (index === 0) {
-            autoUpdater.quitAndInstall()
-            app.quit()
+            setTimeout(() => {
+                autoUpdater.quitAndInstall()
+                app.quit()
+            }, 100);
         }
     })
 });
