@@ -90,14 +90,19 @@ ipcMain.on("getQRCode", async (event) => {
 })
 
 ipcMain.on("sendMsg", async (event, data, base64) => {
-    var filePath = os.tmpdir() + "/alpavilleerpzap.png"
-    if (base64 && base64 !== "") {
-        var binaryData = Buffer.from(base64, 'base64').toString('binary');
-        fs.writeFileSync(filePath, binaryData, "binary");
-    } else {
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath)
+    var filePath = ""
+    try {
+        filePath = app.getPath("temp") + "alpavilleerpzap.png"
+        if (base64 && base64 !== "") {
+            var binaryData = Buffer.from(base64, 'base64').toString('binary');
+            fs.writeFileSync(filePath, binaryData, "binary");
+        } else {
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath)
+            }
         }
+    } catch (error) {
+        console.error(error);
     }
 
     var tel = data.tel
